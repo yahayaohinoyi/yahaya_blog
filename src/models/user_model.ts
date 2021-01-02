@@ -9,7 +9,7 @@ const UserSchema = new Schema({
         required: true
     },
 
-    emial: {
+    email: {
         type: String,
         unique: true,
         required: true,
@@ -43,12 +43,12 @@ const UserSchema = new Schema({
 })
 
 export interface User extends Document{
-    userID: String,
+    userID?: String,
     userName: String,
     email: String,
     password: String,
-    follower: String[],
-    following: String[]
+    follower?: String[],
+    following?: String[]
 }
 
 
@@ -59,8 +59,9 @@ export interface AuthUser {
 }
 
 export interface VerifyUser {
-    userName: User["userName"],
-    email: User["email"]
+    userName?: User["userName"],
+    email?: User["email"]
+    userID?: User["userID"]
 }
 
 

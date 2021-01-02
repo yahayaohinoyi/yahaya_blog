@@ -5,24 +5,26 @@ export interface UserRepo{
     createUser(user: AuthUser): Promise<User | null>;
     authUser(userAuth: AuthUser): Promise<string | null>;
     getUserById(userID: string): Promise<User | null>;
-    verifyUser(userData: AuthUser): Promise<boolean>;
+    verifyUser(userData: VerifyUser): Promise<boolean>;
     fetchUsers(filters: any): Promise<User[] | null>;
     updateUser(userID: string, updates: any): Promise<User | null>;
-    deleteUser(userID: string): Promise<any>;
-
+    deleteUser(userID: AuthUser): Promise<any>;
 
 }
 
 export default class MongoUserRepo implements UserRepo{
 
-    public async createUser(user: User): Promise<User | null>{
+    public async createUser(user: AuthUser): Promise<User | null>{
 
         try{
+            // console.log(user)
             const data = await UserModel.create(user);
+            console.log(data)
             return data
 
         }catch(err){
-            throw Error('User not created')
+            // console.log(err)
+            throw Error('Problems inputing user into db')
 
         }
 
@@ -87,7 +89,7 @@ export default class MongoUserRepo implements UserRepo{
         }
     }
 
-    public async verifyUser(userData: AuthUser): Promise<boolean>{
+    public async verifyUser(userData: VerifyUser): Promise<boolean>{
         try{
             let data;
             if (userData.userName){
@@ -96,6 +98,10 @@ export default class MongoUserRepo implements UserRepo{
 
             else if (userData.email){
                 data = await UserModel.findOne({"email": userData.email})
+            }
+
+            else if (userData.userID){
+                data = await UserModel.findOne({"_id": userData.userID})
             }
             if(data){
                 return true
@@ -109,10 +115,11 @@ export default class MongoUserRepo implements UserRepo{
         }
     }
 
-    public async deleteUser(userID: String): Promise<any>{
+    public async deleteUser(userID: VerifyUser): Promise<any>{
         try{
             let data;
-            data = await UserModel.findByIdAndDelete(userID)
+            data = await UserModel.findByIdAndDelete({"_id": userID.userID})
+            console.log(data)
             return data
         }catch(err){
 

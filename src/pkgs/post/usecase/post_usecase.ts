@@ -26,7 +26,6 @@ export default class PostUsecase{
             }
 
             const data = await this.repo.createpost(postData)
-            console.log(data)
             return {
                 success: true,
                 message: 'post created',
@@ -44,6 +43,38 @@ export default class PostUsecase{
 
         }
 
+
+    }
+
+    public async deletePost(postData: {token: String, postID: String, userID: String}): Promise<any>{
+        try{
+            const authOperation = new AuthOperation();
+            if (!await authOperation.verifyJwtToken(postData.token)){
+
+                return {
+                    success: false,
+                    message: "Wrong token"
+                }
+
+            }
+
+
+            const data = await this.repo.deletePost(postData);
+            return {
+                success: true,
+                message: "post deleted",
+                data
+            }
+
+
+        }catch(err){
+            return {
+                success: false,
+                message: "problems deleting post"
+            }
+
+
+        }
 
     }
 

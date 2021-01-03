@@ -27,7 +27,8 @@ export default class PostHandler{
                 post: req.body.post,
                 repost: req.body.repost? req.body.repost: false,
                 author: req.body.author,
-                token: req.body.token
+                token: req.body.token,
+                likes: []
 
             }
 
@@ -62,4 +63,43 @@ export default class PostHandler{
         }
 
     }
+
+
+    public async deletePost(req: Request, res: Response, next: NextFunction){
+        try{
+            const postData : {token: String, postID: String, userID: String} = {
+                token: req.body.token,
+                postID: req.body.postID,
+                userID: req.body.userID
+            }
+
+            const data = await this.usecase.deletePost(postData);
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+
+        }catch(err){
+            res.json({
+                message: "cannot delete post",
+                success: 'false'
+            })
+        }
+
+
+    }
+
 }

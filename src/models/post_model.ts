@@ -7,9 +7,11 @@ const PostSchema = new Schema({
         type: String
     },
 
-    likes: {
-        type: Number
-    },
+    likes: [
+        {
+        type: String
+    }
+    ],
 
     post: {
         type: String
@@ -35,7 +37,7 @@ const PostSchema = new Schema({
 
 export interface Post extends Document{
     userID: String,
-    likes?: Number,
+    likes?: String[],
     comments?: String[],
     post: String,
     author: String,
@@ -49,7 +51,8 @@ export interface ValidPost{
     post: Post["post"],
     repost?: Post['repost'],
     author: Post["author"],
-    token: String
+    token: String,
+    likes?: String[],
 
 }
 

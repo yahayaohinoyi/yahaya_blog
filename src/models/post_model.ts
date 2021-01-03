@@ -1,13 +1,18 @@
-import {Document, Model, model, Schema, Types, Query} from 'mongoose';
+import {Document, Model, model, Types, Schema, Query} from 'mongoose';
 
 
 const PostSchema = new Schema({
-    postId: {
-        type: Types.ObjectId
+
+    userID: {
+        type: String
     },
 
     likes: {
         type: Number
+    },
+
+    post: {
+        type: String
     },
 
     comments: [
@@ -20,9 +25,6 @@ const PostSchema = new Schema({
         type: String
     },
 
-    reshare: {
-        type: Boolean
-    },
 
     repost: {
         type: Boolean
@@ -32,12 +34,23 @@ const PostSchema = new Schema({
 
 
 export interface Post extends Document{
-    postId: String,
-    likes: Number,
-    comments: String[],
+    userID: String,
+    likes?: Number,
+    comments?: String[],
+    post: String,
     author: String,
-    reshare: Boolean,
-    repost: Boolean
+    repost?: Boolean
+}
+
+
+export interface ValidPost{
+
+    userID: Post["userID"],
+    post: Post["post"],
+    repost?: Post['repost'],
+    author: Post["author"],
+    token: String
+
 }
 
 export default model<Post>("Post", PostSchema)

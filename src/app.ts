@@ -4,11 +4,20 @@ import UserRepo from './pkgs/user/repository/user_db'
 import UserUseCase from './pkgs/user/usecase/user_usecase'
 import UserHandler from './pkgs/user/delivery:http/user_routers'
 import bodyParser from "body-parser";
+
+import PostRepo from './pkgs/post/repository/post_db';
+import PostUseCase from './pkgs/post/usecase/post_usecase';
+import PostHandler from './pkgs/post/delivery:http/post_router'
+
 const logger = require('morgan')
 const app = express();
 
 const UserRepoInit = new UserRepo();
 const UserUseCaseInit = new UserUseCase(UserRepoInit);
+
+const PostRepoInit = new PostRepo();
+const PostUseCaseInit = new PostUseCase(PostRepoInit);
+
 
 
 
@@ -18,6 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(logger('dev'));
 app.use('/v1', UserHandler(UserUseCaseInit))
+app.use('/v1', PostHandler(PostUseCaseInit))
 app.get('/', (req, res) => {
 
     res.send('Hello world')

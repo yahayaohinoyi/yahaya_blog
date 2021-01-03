@@ -62,6 +62,7 @@ export interface VerifyUser {
     userName?: User["userName"],
     email?: User["email"]
     userID?: User["userID"]
+    token?: string
 }
 
 

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import UserUsecase from '../usecase/user_usecase';
 import {AuthUser, VerifyUser} from '../../../models/user_model'
 import { emit } from "cluster";
+import AuthOperation from '../../../config/auth/auth'
 
 
 interface GeneralResponse {
@@ -22,6 +23,7 @@ export default class UserHandler{
 
     public async createUser(req: Request, res: Response){
         try{
+            const authOperation = new AuthOperation();
             const user: AuthUser = {
                 userName: req.body.userName,
                 email: req.body.email,
@@ -41,7 +43,8 @@ export default class UserHandler{
                 throw new Error("cannot create user")
             }
 
-            const token =  jwt.sign({data}, 'dangermouse');
+            // const token =  jwt.sign({data}, 'dangermouse');
+            const token = await authOperation.jwtFunction(data);
 
             data.data.password = null
             const resp: GeneralResponse = {
@@ -71,7 +74,8 @@ export default class UserHandler{
             const user: VerifyUser = {
                 userName: req.body.userName ? req.body.userName : null,
                 email: req.body.email? req.body.email: null,
-                userID: req.body.id? req.body.id: null
+                userID: req.body.id? req.body.id: null,
+                token: req.body.token? req.body.token: null
 
             }
             const data = await this.usecase.deleteUser(user);
@@ -83,10 +87,21 @@ export default class UserHandler{
                 return
             }
 
-            if (data.message === "User does not exist"){
+
+
+            else if (data.message === "User does not exist"){
                 res.json({
                     message: "User does not exist",
-                    success: 200
+                    success: true,
+                    status: 200
+                })
+            }
+
+            else if (!data.success){
+                res.json({
+                    message: data.message,
+                    success: false,
+                    status: 400
                 })
             }
 

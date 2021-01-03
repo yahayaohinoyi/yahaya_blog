@@ -2,6 +2,7 @@
 import {User, AuthUser, VerifyUser} from '../../../models/user_model' ;
 import UserRepo from '../repository/user_db';
 import bcrypt from 'bcrypt'
+import AuthOperation from '../../../config/auth/auth';
 
 
 interface GeneralResponse {
@@ -29,13 +30,15 @@ interface TokenData {
 export default class UserUsecase{
 
     public repo : UserRepo;
+    public authOperation: any;
     constructor(repo: UserRepo){
         this.repo = repo
     }
 
     public async createUser(userData: AuthUser): Promise<GeneralResponse>{
         try{
-            const hashedPassword: string = await bcrypt.hash(userData.password, 10)
+            const authOperation = new AuthOperation()
+            const hashedPassword: string = await authOperation.hashFunction(userData.password)
             userData.password = hashedPassword
 
             if (await this.repo.verifyUser(userData)){
@@ -63,10 +66,11 @@ export default class UserUsecase{
     }
 
 
-    public async deleteUser(userID: VerifyUser): Promise<GeneralResponse>{
+    public async deleteUser(user: VerifyUser): Promise<GeneralResponse>{
         try{
-            if(! await this.repo.verifyUser(userID)){
-                console.log('here')
+            const authOperation = new AuthOperation()
+
+            if(! await this.repo.verifyUser(user)){
                 return {
                     success: false,
                     message: "User does not exist"
@@ -74,15 +78,34 @@ export default class UserUsecase{
 
             }
 
+
+            const verifyToken = await authOperation.verifyJwtToken(user.token);
+            console.log(verifyToken)
+            if (!user.token){
+                return {
+                    message: "Token Required",
+                    success: false,
+                }
+
+            }
+
+            else if (!verifyToken){
+                return {
+                    message: "wrong token",
+                    success: false,
+                }
+            }
+
             
 
-            const data = await this.repo.deleteUser(userID);
+            const data = await this.repo.deleteUser(user);
             return {
                 message: "User deleted",
                 success: true,
                 data
             }
         }catch(err){
+            console.log(err)
             return {
                 message: "Problems deleting user",
                 success: false,

@@ -19,7 +19,6 @@ export default class MongoUserRepo implements UserRepo{
         try{
             // console.log(user)
             const data = await UserModel.create(user);
-            console.log(data)
             return data
 
         }catch(err){
@@ -91,6 +90,7 @@ export default class MongoUserRepo implements UserRepo{
 
     public async verifyUser(userData: VerifyUser): Promise<boolean>{
         try{
+
             let data;
             if (userData.userName){
                 data = await UserModel.findOne({"userName": userData.userName})
@@ -109,8 +109,9 @@ export default class MongoUserRepo implements UserRepo{
             return false
 
         }catch(err){
-            throw Error('problem verifying user')
             return false
+
+            throw Error('problem verifying user')
 
         }
     }
@@ -119,7 +120,6 @@ export default class MongoUserRepo implements UserRepo{
         try{
             let data;
             data = await UserModel.findByIdAndDelete({"_id": userID.userID})
-            console.log(data)
             return data
         }catch(err){
 

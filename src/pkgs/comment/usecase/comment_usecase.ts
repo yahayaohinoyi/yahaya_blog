@@ -4,6 +4,7 @@ import {Comment, ValidComment, SearchComment} from '../../../models/comment_mode
 
 
 import AuthOperation from '../../../config/auth/auth'
+import { Post } from '../../../models/post_model';
 
 interface CommentUsecaseI{
     createComment(commentData: ValidComment): Promise<any>;

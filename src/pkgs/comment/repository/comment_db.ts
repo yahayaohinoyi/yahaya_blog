@@ -13,7 +13,7 @@ interface CommentRepoI{
 
 export default class CommentRepo implements CommentRepoI {
 
-    public async createComment(commentData: ValidComment): Promise<any>{
+    public async createComment(commentData: ValidComment): Promise<Comment | null>{
 
         try{
 
@@ -28,7 +28,7 @@ export default class CommentRepo implements CommentRepoI {
 
     }
 
-    public async getComment(commentID: String): Promise<any>{
+    public async getComment(commentID: String): Promise<Comment | null>{
         try{
             const data = await CommentModel.findById({"_id": commentID});
             return data;
@@ -39,7 +39,7 @@ export default class CommentRepo implements CommentRepoI {
 
 
 
-    public async fetchCommentsById(userID: String): Promise<any>{
+    public async fetchCommentsById(userID: String): Promise<Comment | null>{
         try{
             console.log(userID)
             const data = await CommentModel.find({}, {"userID": userID})
@@ -73,7 +73,7 @@ export default class CommentRepo implements CommentRepoI {
 
     }
 
-    public async unlikeComment(commentData: SearchComment): Promise<any>{
+    public async unlikeComment(commentData: SearchComment): Promise<Comment | null>{
 
         try{
             const data = await CommentModel.findOneAndUpdate({"_id": commentData.commentID}, {$pull: {likes: commentData.userID}});
@@ -89,7 +89,7 @@ export default class CommentRepo implements CommentRepoI {
 
     }
 
-    public async editComment(commentData: SearchComment): Promise<any>{
+    public async editComment(commentData: SearchComment): Promise<Comment | null>{
         try{
             const data = await CommentModel.findByIdAndUpdate(commentData.commentID, {$set: {"comment": commentData.comment}}, {new: true})
             return data;

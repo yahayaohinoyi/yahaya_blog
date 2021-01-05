@@ -1,9 +1,8 @@
-import PostUsecase from '../usecase/post_usecase';
+import CommentUsecase from '../usecase/comment_usecase';
 import {Request, Response, NextFunction} from "express";
 
-import {ValidPost, SearchPost} from '../../../models/post_model' 
+import Comment, {ValidComment, SearchComment} from '../../../models/comment_model' 
 
-import  AuthOperation from '../../../config/auth/auth';
 
 
 interface GeneralResponse {
@@ -13,32 +12,38 @@ interface GeneralResponse {
     data?: any;
     token?: any
 }
-export default class PostHandler{
 
-    public usecase: PostUsecase;
-    constructor(usecase: PostUsecase){
+
+
+export default class CommentHandler {
+
+    public usecase: CommentUsecase;
+    constructor(usecase: CommentUsecase){
         this.usecase = usecase
     };
 
-    public async createPost(req: Request, res: Response, next: NextFunction){
+    public async createComment(req: Request, res: Response, next: NextFunction){
         try{
-            const postData: ValidPost  = {
+            
+
+            const commentData: ValidComment = {
                 userID: req.body.userID,
-                post: req.body.post,
-                repost: req.body.repost? req.body.repost: false,
+                parentID: req.body.parentID,
+                comment: req.body.comment,
                 author: req.body.author,
                 token: req.body.token,
-                likes: []
+                likes: [],
+                comments : []
 
             }
-            if (!postData.post){
+            if (!commentData.comment){
                 res.json({
-                    message: 'Empty post',
+                    message: 'Empty comment',
                     status: 400
                 })
             }
 
-            const data = await this.usecase.createPost(postData);
+            const data = await this.usecase.createComment(commentData);
 
             if (data.success){
                 res.json({
@@ -61,7 +66,7 @@ export default class PostHandler{
 
         }catch(err){
             res.json({
-                message: "cannot create post",
+                message: "cannot create comment",
                 success: false
             })
 
@@ -70,16 +75,16 @@ export default class PostHandler{
 
     }
 
-    public async getPost(req: Request, res: Response, next: NextFunction){
+    public async getComment(req: Request, res: Response, next: NextFunction){
         try{
 
-            const postData: SearchPost = {
+            const commentData: SearchComment = {
                 userID: req.body.userID,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 token: req.body.token
             }
 
-            const data = await this.usecase.getPost(postData);
+            const data = await this.usecase.getComment(commentData);
 
             if (data.success){
                 res.json({
@@ -103,7 +108,7 @@ export default class PostHandler{
 
         }catch(err){
             res.json({
-                message: "cannot get post",
+                message: "cannot get comment",
                 success: false
             })
 
@@ -113,15 +118,15 @@ export default class PostHandler{
 
     }
 
-    public async likePost(req: Request, res: Response, next: NextFunction){
+    public async likeComment(req: Request, res: Response, next: NextFunction){
 
         try{
-            const postData: SearchPost = {
+            const commentData: SearchComment = {
                 userID: req.body.userID,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 token: req.body.token
             }
-            const data = await this.usecase.likePost(postData);
+            const data = await this.usecase.likeComment(commentData);
             if (data.success){
                 res.json({
                     data: data.data,
@@ -144,7 +149,7 @@ export default class PostHandler{
 
         }catch(err){
             res.json({
-                message: "cannot like post",
+                message: "cannot like comment",
                 success: false
             })
 
@@ -157,15 +162,15 @@ export default class PostHandler{
 
     }
 
-    public async unlikePost(req: Request, res: Response, next: NextFunction){
+    public async unlikeComment(req: Request, res: Response, next: NextFunction){
         try{
 
-            const postData: SearchPost = {
+            const commentData: SearchComment = {
                 userID: req.body.userID,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 token: req.body.token
             }
-            const data = await this.usecase.unlikePost(postData);
+            const data = await this.usecase.unlikeComment(commentData);
             if (data.success){
                 res.json({
                     data: data.data,
@@ -188,7 +193,7 @@ export default class PostHandler{
 
         }catch(err){
             res.json({
-                message: "cannot unlike post",
+                message: "cannot unlike comment",
                 success: false
             })
 
@@ -196,23 +201,23 @@ export default class PostHandler{
         }
     }
 
-    public async editPost(req: Request, res: Response, next: NextFunction){
+    public async editComment(req: Request, res: Response, next: NextFunction){
         try{
-            const postData: SearchPost = {
+            const commentData: SearchComment = {
                 userID: req.body.userID,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 token: req.body.token,
-                post: req.body.post
+                comment: req.body.comment
             }
 
-            if (!postData.post){
+            if (!commentData.comment){
                 res.json({
                     message: 'Empty post',
                     status: 400
                 })
             }
 
-            const data = await this.usecase.editPost(postData);
+            const data = await this.usecase.editComment(commentData);
             if (data.success){
                 res.json({
                     data: data.data,
@@ -232,7 +237,7 @@ export default class PostHandler{
             }
         }catch(err){
             res.json({
-                message: "cannot edit post",
+                message: "cannot edit comment",
                 success: false
             })
 
@@ -243,16 +248,16 @@ export default class PostHandler{
 
     }
 
-    public async fetchPostsById(req: Request, res: Response, next: NextFunction){
+    public async fetchCommentsById(req: Request, res: Response, next: NextFunction){
 
         try{
-            const postData: SearchPost = {
+            const commentData: SearchComment = {
                 userID: req.body.userID,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 token: req.body.token
             }
 
-            const data = await this.usecase.fetchPostsById(postData);
+            const data = await this.usecase.fetchCommentsById(commentData);
 
             if (data.success){
                 res.json({
@@ -262,6 +267,7 @@ export default class PostHandler{
                     success: true
                 })
     
+        
             }
             else{
                 res.json({
@@ -273,22 +279,22 @@ export default class PostHandler{
             }
         }catch(err){
             res.json({
-                message: "cannot fetch posts",
+                message: "cannot fetch comments",
                 success: false
             })
         }
     }
 
 
-    public async deletePost(req: Request, res: Response, next: NextFunction){
+    public async deleteComment(req: Request, res: Response, next: NextFunction){
         try{
-            const postData : {token: String, postID: String, userID: String} = {
+            const commentData : SearchComment = {
                 token: req.body.token,
-                postID: req.body.postID,
+                commentID: req.body.commentID,
                 userID: req.body.userID
             }
 
-            const data = await this.usecase.deletePost(postData);
+            const data = await this.usecase.deleteComment(commentData);
             if (data.success){
                 res.json({
                     data: data.data,
@@ -309,7 +315,7 @@ export default class PostHandler{
 
         }catch(err){
             res.json({
-                message: "cannot delete post",
+                message: "cannot delete comment",
                 success: 'false'
             })
         }

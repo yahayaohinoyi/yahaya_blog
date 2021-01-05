@@ -56,4 +56,12 @@ export interface ValidPost{
 
 }
 
+export interface SearchPost{
+    userID: Post["userID"],
+    token: String,
+    postID: String,
+    post?: String
+
+}
+
 export default model<Post>("Post", PostSchema)

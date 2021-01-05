@@ -1,7 +1,7 @@
 import PostUsecase from '../usecase/post_usecase';
 import {Request, Response, NextFunction} from "express";
 
-import {ValidPost} from '../../../models/post_model' 
+import {ValidPost, SearchPost} from '../../../models/post_model' 
 
 import  AuthOperation from '../../../config/auth/auth';
 
@@ -31,6 +31,12 @@ export default class PostHandler{
                 likes: []
 
             }
+            if (!postData.post){
+                res.json({
+                    message: 'Empty post',
+                    status: 400
+                })
+            }
 
             const data = await this.usecase.createPost(postData);
 
@@ -56,12 +62,221 @@ export default class PostHandler{
         }catch(err){
             res.json({
                 message: "cannot create post",
-                success: 'false'
+                success: false
             })
 
 
         }
 
+    }
+
+    public async getPost(req: Request, res: Response, next: NextFunction){
+        try{
+
+            const postData: SearchPost = {
+                userID: req.body.userID,
+                postID: req.body.postID,
+                token: req.body.token
+            }
+
+            const data = await this.usecase.getPost(postData);
+
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+
+
+
+        }catch(err){
+            res.json({
+                message: "cannot get post",
+                success: false
+            })
+
+
+        }
+
+
+    }
+
+    public async likePost(req: Request, res: Response, next: NextFunction){
+
+        try{
+            const postData: SearchPost = {
+                userID: req.body.userID,
+                postID: req.body.postID,
+                token: req.body.token
+            }
+            const data = await this.usecase.likePost(postData);
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+
+
+
+        }catch(err){
+            res.json({
+                message: "cannot like post",
+                success: false
+            })
+
+
+
+        }
+
+
+
+
+    }
+
+    public async unlikePost(req: Request, res: Response, next: NextFunction){
+        try{
+
+            const postData: SearchPost = {
+                userID: req.body.userID,
+                postID: req.body.postID,
+                token: req.body.token
+            }
+            const data = await this.usecase.unlikePost(postData);
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+
+
+
+        }catch(err){
+            res.json({
+                message: "cannot unlike post",
+                success: false
+            })
+
+            
+        }
+    }
+
+    public async editPost(req: Request, res: Response, next: NextFunction){
+        try{
+            const postData: SearchPost = {
+                userID: req.body.userID,
+                postID: req.body.postID,
+                token: req.body.token,
+                post: req.body.post
+            }
+
+            if (!postData.post){
+                res.json({
+                    message: 'Empty post',
+                    status: 400
+                })
+            }
+
+            const data = await this.usecase.editPost(postData);
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+        }catch(err){
+            res.json({
+                message: "cannot edit post",
+                success: false
+            })
+
+
+
+
+        }
+
+    }
+
+    public async fetchPostsById(req: Request, res: Response, next: NextFunction){
+
+        try{
+            const postData = {
+                userID: req.body.userID,
+                postID: req.body.postID,
+                token: req.body.token
+            }
+
+            const data = await this.usecase.fetchPostsById(postData);
+
+            if (data.success){
+                res.json({
+                    data: data.data,
+                    message: data.message,
+                    status: 200,
+                    success: true
+                })
+    
+            }
+            else{
+                res.json({
+                    message: data.message,
+                    status: 401,
+                    success: false
+                })
+    
+            }
+        }catch(err){
+            res.json({
+                message: "cannot fetch posts",
+                success: false
+            })
+        }
     }
 
 

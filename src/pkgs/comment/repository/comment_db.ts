@@ -105,6 +105,18 @@ export default class CommentRepo implements CommentRepoI {
 
     }
 
+    public async editCommentChildren(commentData: ValidComment): Promise<any>{
+        try{
+            const data = await CommentModel.findOneAndUpdate({"_id": commentData.parentID}, {$push: {comments: commentData.otherID}});
+            return data
+
+        }catch(err){
+            throw Error('cannot add children')
+        }
+
+
+    }
+
     public async deleteComment(commentData: SearchComment): Promise<any>{
         try{
             const data = await CommentModel.remove({"_id": commentData.commentID, "userID": commentData.userID})

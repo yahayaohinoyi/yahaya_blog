@@ -50,7 +50,8 @@ export interface ValidComment{
     token: String,
     author: Comment["author"],
     likes: Comment["likes"],
-    comments: Comment["comments"]
+    comments: Comment["comments"],
+    otherID?: String 
 
 }
 

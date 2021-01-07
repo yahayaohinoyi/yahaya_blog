@@ -47,7 +47,21 @@ export default class CommentUsecase implements CommentUsecaseI{
                 otherID: data?._id,
                 post: '',
             }
-            const data_2 = await this.postrepo.editPostChildren(object);
+
+            const object_2: ValidComment = {
+                userID: commentData.userID,
+                token: commentData.token,
+                comment: '',
+                author: '',
+                likes: [],
+                comments: [],
+                parentID: data?.parentID,
+                otherID: data?._id,
+            }
+
+            await this.postrepo.editPostChildren(object);
+            await this.repo.editCommentChildren(object_2);
+
 
  
             return {

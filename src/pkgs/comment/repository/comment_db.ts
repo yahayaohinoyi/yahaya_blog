@@ -13,11 +13,12 @@ interface CommentRepoI{
 
 export default class CommentRepo implements CommentRepoI {
 
-    public async createComment(commentData: ValidComment): Promise<Comment | null>{
+    public async createComment(commentData: ValidComment): Promise<Comment>{
 
         try{
 
             const data = await CommentModel.create(commentData);
+            
             return data;
 
 

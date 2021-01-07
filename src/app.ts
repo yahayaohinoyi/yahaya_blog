@@ -26,7 +26,7 @@ const PostRepoInit = new PostRepo();
 const PostUseCaseInit = new PostUseCase(PostRepoInit);
 
 const CommentRepoInit = new CommentRepo();
-const CommentUseCaseInit = new CommentUseCase(CommentRepoInit);
+const CommentUseCaseInit = new CommentUseCase(CommentRepoInit, PostRepoInit);
 
 
 

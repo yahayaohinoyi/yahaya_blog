@@ -33,7 +33,7 @@ export default class CommentHandler {
                 author: req.body.author,
                 token: req.body.token,
                 likes: [],
-                comments : []
+                comments : [],
 
             }
             if (!commentData.comment){

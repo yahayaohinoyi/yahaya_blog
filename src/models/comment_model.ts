@@ -47,7 +47,7 @@ export interface ValidComment{
     userID: Comment["userID"],
     comment: Comment["comment"],
     parentID: Comment["parentID"],
-    token?: String,
+    token: String,
     author: Comment["author"],
     likes: Comment["likes"],
     comments: Comment["comments"]

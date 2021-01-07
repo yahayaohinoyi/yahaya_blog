@@ -90,6 +90,17 @@ export default class PostRepository{
 
         }
 
+    }
+
+    public async editPostChildren(postData: SearchPost): Promise<any>{
+        try{
+            const data = await PostModel.findOneAndUpdate({"_id": postData.postID}, {$push: {comments: postData.otherID}});
+            return data
+
+        }catch(err){
+            throw Error('cannot add children')
+        }
+
 
     }
 

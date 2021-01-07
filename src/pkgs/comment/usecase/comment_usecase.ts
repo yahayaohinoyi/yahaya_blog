@@ -1,6 +1,8 @@
 import CommentRepo from '../repository/comment_db';
+import PostRepo from '../../post/repository/post_db';
 
 import {Comment, ValidComment, SearchComment} from '../../../models/comment_model'
+import {SearchPost} from '../../../models/post_model';
 
 
 import AuthOperation from '../../../config/auth/auth'
@@ -19,8 +21,10 @@ interface CommentUsecaseI{
 export default class CommentUsecase implements CommentUsecaseI{
 
     public repo: CommentRepo;
-    constructor(repo: CommentRepo){
+    public postrepo: PostRepo;
+    constructor(repo: CommentRepo, postrepo: PostRepo){
         this.repo = repo;
+        this.postrepo = postrepo;
     }
 
     public async createComment(commentData: ValidComment){
@@ -36,6 +40,16 @@ export default class CommentUsecase implements CommentUsecaseI{
             }
 
             const data = await this.repo.createComment(commentData);
+            const object: SearchPost = {
+                userID: commentData.userID,
+                token: commentData.token,
+                postID: data?.parentID,
+                otherID: data?._id,
+                post: '',
+            }
+            const data_2 = await this.postrepo.editPostChildren(object);
+
+ 
             return {
                 data,
                 message: "comment created",

@@ -60,7 +60,8 @@ export interface SearchPost{
     userID: Post["userID"],
     token: String,
     postID: String,
-    post?: String
+    post?: String,
+    otherID?: String,
 
 }
 
